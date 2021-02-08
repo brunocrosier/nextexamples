@@ -175,7 +175,7 @@ export const GridLayout = ({
             Explore all the official Next.js examples
           </Text>
           <ExternalLinkButton
-            href="https://github.com/brunocrosier"
+            href="https://github.com/brunocrosier/nextexamples"
             text="Contribute"
             leftIcon={<GoMarkGithub />}
           />
@@ -251,7 +251,6 @@ export const GridLayout = ({
               _placeholder={{
                 color: "gray.400",
               }}
-              // _focus={{ boxShadow: theme.shadows["2xl"] }}
               _focus={{
                 border: "2px solid rgb(99 179 237)",
                 boxShadow:
