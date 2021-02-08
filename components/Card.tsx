@@ -145,8 +145,8 @@ export const Card = ({ example }: { example: SanitizedNextExample }) => {
     <Stack
       bg={useColorModeValue("white", "gray.800")}
       pos="relative"
-      maxH="100%"
-      overflow="hidden"
+      maxH="calc(100vh - 3rem)"
+      // overflow="hidden"
       rounded="lg"
       spacing={0}
     >

@@ -85,7 +85,7 @@ export const GridLayout = ({
           w="100vw"
           pos="fixed"
           zIndex={100}
-          bg="blackAlpha.300"
+          bg="blackAlpha.500"
           sx={{
             backdropFilter: "blur(3px)",
           }}
@@ -96,8 +96,7 @@ export const GridLayout = ({
           <Box
             my={6}
             w="60rem"
-            maxH="calc(100vh - 4rem)"
-            maxW="calc(100vw - 4rem)"
+            maxW="calc(100vw - 3rem)"
             overflow="hidden"
             rounded={["xl", "2xl"]}
             shadow="2xl"
