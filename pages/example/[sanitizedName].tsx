@@ -99,7 +99,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
     "https://api.github.com/repos/vercel/next.js/contents/examples?ref=canary",
     {
       headers: {
-        authorization: "token c81e5826899a176cf845ef00451dbb8f91f84af2",
+        authorization: `token ${process.env.GITHUB_API_KEY}`,
       },
     }
   );
