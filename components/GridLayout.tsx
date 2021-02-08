@@ -8,7 +8,9 @@ import { useRouter } from "next/router";
 import { NextAppContext } from "../pages/_app";
 import { useInView } from "react-intersection-observer";
 import {
+  Box,
   Button,
+  Flex,
   FormControl,
   Heading,
   Input,
@@ -61,6 +63,11 @@ export const GridLayout = ({
     });
   }, []);
 
+  // "lock" scrolling when the modal is open
+  useEffect(() => {
+    document.body.style.overflow = sanitizedName ? "hidden" : "";
+  }, [sanitizedName]);
+
   return (
     <>
       <Head>
@@ -70,7 +77,43 @@ export const GridLayout = ({
           content="Explore all the official Next.js examples, for free"
         />
       </Head>
-      <Modal
+      {sanitizedName && (
+        <Flex
+          alignItems="flex-start"
+          justifyContent="center"
+          h="100vh"
+          w="100vw"
+          pos="fixed"
+          zIndex={100}
+          bg="blackAlpha.300"
+          sx={{
+            backdropFilter: "blur(3px)",
+          }}
+          onClick={() =>
+            router.push("/", undefined, { shallow: true, scroll: false })
+          }
+        >
+          <Box
+            my={6}
+            w="60rem"
+            maxH="calc(100vh - 4rem)"
+            maxW="calc(100vw - 4rem)"
+            overflow="hidden"
+            rounded={["xl", "2xl"]}
+            shadow="2xl"
+            // sx={{
+            //   boxShadow: "0 0 6rem 1rem #3e5a71a3",
+            // }}
+          >
+            <Card
+              example={data.find(
+                (repo) => repo.sanitizedName === sanitizedName
+              )}
+            />
+          </Box>
+        </Flex>
+      )}
+      {/* <Modal
         isOpen={!!sanitizedName}
         onRequestClose={() => {
           return router.push("/", undefined, { shallow: true, scroll: false });
@@ -126,7 +169,7 @@ export const GridLayout = ({
             overflow: auto;
           }
         `}</style>
-      </Modal>
+      </Modal> */}
       <Stack
         alignItems="center"
         bgGradient={`linear(to-tr, ${useColorModeValue(
@@ -183,6 +226,7 @@ export const GridLayout = ({
         <FormControl
           pos="sticky"
           d="flex"
+          justifyContent="center"
           mx="auto"
           top="0"
           zIndex="50"
@@ -200,7 +244,12 @@ export const GridLayout = ({
               Search all {data.length} Next.js example
             </label>
           </VisuallyHidden>
-          <InputGroup border="none" size="lg" shadow="md">
+          <InputGroup
+            border="none"
+            size="lg"
+            shadow="md"
+            maxW={["640px", "768px", "1024px", "1280px", "1536px"]}
+          >
             {searchInputText ? (
               <InputLeftElement
                 bg="transparent"
@@ -276,7 +325,6 @@ export const GridLayout = ({
           spacing={[4, 6]}
           w="100%"
           maxW={["640px", "768px", "1024px", "1280px", "1536px"]}
-          m="auto"
         >
           {searchResults && searchInputText
             ? searchResults.map((example: any) => (

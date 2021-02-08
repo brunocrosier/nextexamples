@@ -1,5 +1,6 @@
 import { GridLayout } from "@/components/GridLayout";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { SanitizedNextExample } from "types/SanitizedNextExample";
 
 const ArticlePage = ({ data, sanitizedName }) => {
   return <GridLayout data={data} sanitizedName={sanitizedName} />;
@@ -21,28 +22,27 @@ export const getStaticProps: GetStaticProps = async ({
 
   const data = await raw.json();
 
-  data.forEach((repo) => {
-    repo.sanitizedName = repo.name;
+  const arrayOfSanitizedNameObjects: SanitizedNextExample[] = data.map(
+    (repo) => {
+      repo.sanitizedName = repo.name;
 
-    // sanitize name by removing the "with-" prefix
-    if (/^with-/.test(repo.sanitizedName)) {
-      repo.sanitizedName = repo.sanitizedName.replace("with-", "");
+      // sanitize name by removing the "with-" prefix
+      if (/^with-/.test(repo.sanitizedName)) {
+        repo.sanitizedName = repo.sanitizedName.replace("with-", "");
+      }
+
+      return {
+        name: repo.name,
+        sanitizedName: repo.sanitizedName,
+      };
     }
+  );
 
-    // delete unnecessary keys from the repo object
-    [
-      "path",
-      "sha",
-      "size",
-      "url",
-      "git_url",
-      "download_url",
-      "type",
-      "_links",
-    ].forEach((key) => delete repo[key]);
-  });
+  const thisRepo: SanitizedNextExample = arrayOfSanitizedNameObjects.find(
+    (repo) => repo.sanitizedName === sanitizedName
+  );
 
-  const thisRepo = data.find((repo) => repo.sanitizedName === sanitizedName);
+  console.log({ thisRepo });
 
   const rawPackageJson = await fetch(
     `https://raw.githubusercontent.com/vercel/next.js/canary/examples/${thisRepo.name}/package.json`
@@ -52,6 +52,7 @@ export const getStaticProps: GetStaticProps = async ({
     const packageJson = await rawPackageJson.json();
     const { dependencies, devDependencies } = packageJson;
 
+    // filter out the dependencies which are in every example
     if (dependencies) {
       const dependenciesAsArray = Object.keys(dependencies).filter(
         (dependency) => !["next", "react", "react-dom"].includes(dependency)
@@ -87,8 +88,20 @@ export const getStaticProps: GetStaticProps = async ({
     thisRepo.content = content;
   }
 
+  // sort the repos alphabetically by the sanitized name
+  arrayOfSanitizedNameObjects?.sort((a, b) =>
+    a.sanitizedName > b.sanitizedName
+      ? 1
+      : b.sanitizedName > a.sanitizedName
+      ? -1
+      : 0
+  );
+
   return {
-    props: { sanitizedName, data },
+    props: {
+      sanitizedName,
+      data: arrayOfSanitizedNameObjects,
+    },
     revalidate: 60 * 60 * 10, // 10 Hours
   };
 };

@@ -142,7 +142,14 @@ const Dependencies = ({
 
 export const Card = ({ example }: { example: SanitizedNextExample }) => {
   return (
-    <Stack bg={useColorModeValue("white", "gray.800")} rounded="lg" spacing={0}>
+    <Stack
+      bg={useColorModeValue("white", "gray.800")}
+      pos="relative"
+      maxH="100%"
+      overflow="hidden"
+      rounded="lg"
+      spacing={0}
+    >
       <Grid
         gap={[2, 3]}
         alignItems="flex-start"
