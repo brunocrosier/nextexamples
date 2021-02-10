@@ -77,6 +77,7 @@ export const GridLayout = ({
           content="Explore all the official Next.js examples, for free"
         />
       </Head>
+      {/* this 'modal' only shows up when we are on /example/[sanitizedName] */}
       {sanitizedName && (
         <Flex
           alignItems="flex-start"
@@ -89,9 +90,12 @@ export const GridLayout = ({
           sx={{
             backdropFilter: "blur(3px)",
           }}
-          onClick={() =>
-            router.push("/", undefined, { shallow: true, scroll: false })
-          }
+          onClick={(e) => {
+            // prevent onClick from being fired when clicking on the child components!
+            if (e.target === e.currentTarget) {
+              router.push("/", undefined, { shallow: true, scroll: false });
+            }
+          }}
         >
           <Box
             my={6}
@@ -100,9 +104,6 @@ export const GridLayout = ({
             overflow="hidden"
             rounded={["xl", "2xl"]}
             shadow="2xl"
-            // sx={{
-            //   boxShadow: "0 0 6rem 1rem #3e5a71a3",
-            // }}
           >
             <Card
               example={data.find(
@@ -112,63 +113,7 @@ export const GridLayout = ({
           </Box>
         </Flex>
       )}
-      {/* <Modal
-        isOpen={!!sanitizedName}
-        onRequestClose={() => {
-          return router.push("/", undefined, { shallow: true, scroll: false });
-        }}
-        contentLabel={`Next.js example modal for: ${sanitizedName}`}
-        className="Modal"
-        overlayClassName="Overlay"
-      >
-        <Card
-          example={data.find((repo) => repo.sanitizedName === sanitizedName)}
-        />
-        <style jsx global>{`
-          body {
-            overflow: hidden;
-          }
-          .Overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 50;
-            background: #010c15a3;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(0.3rem);
-            transition: 1s all;
-          }
-          .Modal {
-            width: 60rem;
-            max-width: calc(100% - 2rem);
-            height: 80vh;
-            max-height: 100%;
-            position: fixed;
-            z-index: 100;
-            box-shadow: 0 0 6rem 1rem #010c15a3;
-            outline: 0;
-            border-radius: 0.5rem;
-          }
-
-          html.dark .Modal {
-            box-shadow: 0 0 6rem 1rem #3e5a71a3;
-          }
-
-          .Modal > * {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-          }
-        `}</style>
-      </Modal> */}
+      {/* main page */}
       <Stack
         alignItems="center"
         bgGradient={`linear(to-tr, ${useColorModeValue(

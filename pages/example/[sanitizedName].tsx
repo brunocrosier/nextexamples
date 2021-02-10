@@ -22,6 +22,8 @@ export const getStaticProps: GetStaticProps = async ({
 
   const data = await raw.json();
 
+  let thisRepoHtmlUrl;
+
   const arrayOfSanitizedNameObjects: SanitizedNextExample[] = data.map(
     (repo) => {
       repo.sanitizedName = repo.name;
@@ -29,6 +31,10 @@ export const getStaticProps: GetStaticProps = async ({
       // sanitize name by removing the "with-" prefix
       if (/^with-/.test(repo.sanitizedName)) {
         repo.sanitizedName = repo.sanitizedName.replace("with-", "");
+      }
+
+      if (repo.sanitizedName === sanitizedName) {
+        thisRepoHtmlUrl = repo.html_url;
       }
 
       return {
@@ -42,7 +48,7 @@ export const getStaticProps: GetStaticProps = async ({
     (repo) => repo.sanitizedName === sanitizedName
   );
 
-  console.log({ thisRepo });
+  thisRepo.html_url = thisRepoHtmlUrl;
 
   const rawPackageJson = await fetch(
     `https://raw.githubusercontent.com/vercel/next.js/canary/examples/${thisRepo.name}/package.json`
